@@ -1,4 +1,4 @@
-from flask import  Flask, render_template, url_for, redirect
+from flask import  Flask, render_template, url_for, redirect, request
 
 app = Flask(__name__)
 
@@ -14,7 +14,7 @@ def Hello():
 def HelloUser(name):
     if name.lower() == "admin":
         return redirect(url_for("HelloAdmin"))
-    return render_template("hello_user.html")
+    return render_template("hello_user.html",name=name)
 
 @app.route("/hello_admin")
 def HelloAdmin():
@@ -24,7 +24,36 @@ def HelloAdmin():
 def Hello_User(name):
     return render_template("hello.html",name=name)
 
-@app.route("/add/<int:number1>/<int:number2>")
-def Add(number1, number2):
+@app.route("/add")
+def Add():
+    number1 = int(request.args["number1"]) 
+    number2 = int(request.args["number2"]) 
     result = number1 + number2
     return  render_template("add.html",number1=number1,number2=number2,result=result)
+
+@app.route("/login",methods=["POST","GET"])
+def Login():
+    if request.method == "POST":
+        username = request.form["name"]
+        return redirect(url_for("HelloUser",name=username))
+
+    return render_template("login.html")
+
+@app.route("/student", methods=["POST","GET"])
+def Student():
+    return render_template("student.html")
+
+@app.route("/result",methods=["POST"])
+def Result():
+    # name = request.form["name"]
+    # fizik = request.form["fizik"]
+    # matematik = request.form["matematik"]
+    # kimya = request.form["kimya"]
+    # return render_template("result.html",name=name, fizik = fizik, matematik = matematik, kimya = kimya)
+    ContextData = {
+        "name":request.form["name"],
+        "fizik":request.form["fizik"],
+        "kimya":request.form["kimya"],
+        "matematik":request.form["matematik"]
+    }
+    return render_template("result.html",**ContextData)
