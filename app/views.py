@@ -1,76 +1,84 @@
 from flask import  Flask, render_template, url_for, redirect, request, make_response,session
 from itsdangerous import Signer,BadSignature
-from .session_interface import MySessionInterface
+
+
 app = Flask(__name__)
 app.secret_key = b"secretkey1903"
-app.session_interface = MySessionInterface()
+# app.session_interface = MySessionInterface()
 
 @app.route("/")
-def Home():
-    signer = Signer("MySecretKey")
-    signed_name = request.cookies.get("name")   # How to read the cookie
-    try:
-        name = signer.unsign(signed_name).decode()  # bytes to string
-        print("name",name)
-    except BadSignature:
-        print("bad signature")
-
-    signed_name = signer.sign("Ayca")
-    response = make_response("Flask Denemesidir")
-    response.set_cookie("name",signed_name)  # How to set the cookie
-    return response
-
-@app.route("/session")
-def Session():
-    if "name" in session:
-        print(session["name"])
-
-    # Setting the session
-    session["name"] = "Emrullah"
-    session["username"] = "Emrullah123"
+def Index():
+    return render_template("index.html")
 
 
-    return "<h1>Merhaba Session</html>"
 
-@app.route("/hello")
-def Hello():
-    return render_template("hello.html")
 
-@app.route("/hello_user/<string:name>")
-def HelloUser(name):
-    if name.lower() == "admin":
-        return redirect(url_for("HelloAdmin"))
-    return render_template("hello_user.html",name=name)
+# @app.route("/")
+# def Home():
+#     signer = Signer("MySecretKey")
+#     signed_name = request.cookies.get("name")   # How to read the cookie
+#     try:
+#         name = signer.unsign(signed_name).decode()  # bytes to string
+#         print("name",name)
+#     except BadSignature:
+#         print("bad signature")
 
-@app.route("/hello_admin")
-def HelloAdmin():
-    return render_template("hello_admin.html")
+#     signed_name = signer.sign("Ayca")
+#     response = make_response("Flask Denemesidir")
+#     response.set_cookie("name",signed_name)  # How to set the cookie
+#     return response
 
-@app.route("/hello/<name>")
-def Hello_User(name):
-    return render_template("hello.html",name=name)
+# @app.route("/session")
+# def Session():
+#     if "name" in session:
+#         print(session["name"])
 
-@app.route("/add")
-def Add():
-    number1 = int(request.args["number1"]) 
-    number2 = int(request.args["number2"]) 
-    result = number1 + number2
-    return  render_template("add.html",number1=number1,number2=number2,result=result)
+#     # Setting the session
+#     session["name"] = "Emrullah"
+#     session["username"] = "Emrullah123"
 
-@app.route("/login",methods=["POST","GET"])
-def Login():
-    if request.method == "POST":
-        username = request.form["name"]
-        return redirect(url_for("HelloUser",name=username))
 
-    return render_template("login.html")
+#     return "<h1>Merhaba Session</html>"
 
-@app.route("/student", methods=["POST","GET"])
-def Student():
-    return render_template("student.html")
+# @app.route("/hello")
+# def Hello():
+#     return render_template("hello.html")
 
-@app.route("/result",methods=["POST"])
-def Result():
+# @app.route("/hello_user/<string:name>")
+# def HelloUser(name):
+#     if name.lower() == "admin":
+#         return redirect(url_for("HelloAdmin"))
+#     return render_template("hello_user.html",name=name)
+
+# @app.route("/hello_admin")
+# def HelloAdmin():
+#     return render_template("hello_admin.html")
+
+# @app.route("/hello/<name>")
+# def Hello_User(name):
+#     return render_template("hello.html",name=name)
+
+# @app.route("/add")
+# def Add():
+#     number1 = int(request.args["number1"]) 
+#     number2 = int(request.args["number2"]) 
+#     result = number1 + number2
+#     return  render_template("add.html",number1=number1,number2=number2,result=result)
+
+# @app.route("/login",methods=["POST","GET"])
+# def Login():
+#     if request.method == "POST":
+#         username = request.form["name"]
+#         return redirect(url_for("HelloUser",name=username))
+
+#     return render_template("login.html")
+
+# @app.route("/student", methods=["POST","GET"])
+# def Student():
+#     return render_template("student.html")
+
+# @app.route("/result",methods=["POST"])
+# def Result():
     # name = request.form["name"]
     # fizik = request.form["fizik"]
     # matematik = request.form["matematik"]

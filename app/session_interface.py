@@ -39,7 +39,6 @@ class MySessionInterface(SessionInterface):
             sessionId = str(uuid.uuid4())
             return self.session_class(sessionId=sessionId)
 
-
             initialSessionValueAsJson = self.container.get(unsignedSessionId)
             initialSessionValue = json.loads(initialSessionValueAsJson)
 
