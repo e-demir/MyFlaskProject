@@ -1,10 +1,21 @@
-from flask import  Flask, render_template, url_for, redirect, request
-
+from flask import  Flask, render_template, url_for, redirect, request, make_response
+from itsdangerous import Signer,BadSignature
 app = Flask(__name__)
 
 @app.route("/")
 def Home():
-    return "Flask Denemesi"
+    signer = Signer("MySecretKey")
+    signed_name = request.cookies.get("name")   # How to read the cookie
+    try:
+        name = signer.unsign(signed_name).decode()  # bytes to string
+        print("name",name)
+    except BadSignature:
+        print("bad signature")
+
+    signed_name = signer.sign("Ayca")
+    response = make_response("Flask Denemesidir")
+    response.set_cookie("name",signed_name)  # How to set the cookie
+    return response
 
 @app.route("/hello")
 def Hello():
