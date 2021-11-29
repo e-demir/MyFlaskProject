@@ -1,6 +1,9 @@
-from flask import  Flask, render_template, url_for, redirect, request, make_response
+from flask import  Flask, render_template, url_for, redirect, request, make_response,session
 from itsdangerous import Signer,BadSignature
+from .session_interface import MySessionInterface
 app = Flask(__name__)
+app.secret_key = b"secretkey1903"
+app.session_interface = MySessionInterface()
 
 @app.route("/")
 def Home():
@@ -16,6 +19,18 @@ def Home():
     response = make_response("Flask Denemesidir")
     response.set_cookie("name",signed_name)  # How to set the cookie
     return response
+
+@app.route("/session")
+def Session():
+    if "name" in session:
+        print(session["name"])
+
+    # Setting the session
+    session["name"] = "Emrullah"
+    session["username"] = "Emrullah123"
+
+
+    return "<h1>Merhaba Session</html>"
 
 @app.route("/hello")
 def Hello():
