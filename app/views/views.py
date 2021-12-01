@@ -1,42 +1,35 @@
 from flask import  Flask, render_template, url_for, redirect, request, make_response,session,abort
 from itsdangerous import Signer,BadSignature
+from app.controllers import UserLogin, UserLogout,GetCurrentUser,GetContactList, SaveContactRequest
 
-
-app = Flask(__name__)
+app = Flask(__name__, template_folder="../templates")
 app.secret_key = b"secretkey1903"
 # app.session_interface = MySessionInterface()
 
-def get_current_user():
-    username = ""
-    login_auth = False
-    if "username" in session:
-        username = session["username"]
-        login_auth = True
-    
-    return username,login_auth
-
 @app.route("/")
 def Index():
-    username, login_auth = get_current_user()
+    username, login_auth = GetCurrentUser()
     return render_template("index.html",username=username, login_auth=login_auth)
 
 @app.route("/contact", methods=["GET","POST"])
 def Contact():
-    username, login_auth = get_current_user()
+    username, login_auth = GetCurrentUser()
     if request.method == "POST":
-        pass
-
+        if request.form:
+            name = request.form.get("name")
+            email = request.form.get("email")
+            category = request.form.get("category")
+            priority = request.form.get("priority")
+            message = request.form.get("message")
+            SaveContactRequest(name, email, category, priority, message)
+            return redirect(url_for("Contact"))
+    username,login_auth = GetCurrentUser()
     return render_template("contact.html",username=username, login_auth=login_auth)
 
 @app.route("/contactlist")
 def ContactList():
-    username, login_auth = get_current_user()
-    contactList = [
-        ["Emrullah DEMİR","Üretim","Yüksek"],
-        ["Ayça TUNCAY","Satış","Orta"],
-        ["Zehra Sultan DEMİR","İnsan Kaynakları","Yüksek"],
-        ["Ali Veli","Nakliye","Orta"]
-    ]
+    username, login_auth = GetCurrentUser()
+    contactList = GetContactList()
     return render_template("contact_list.html",username=username, login_auth=login_auth, contactList=contactList)
 
 @app.route("/login", methods=["GET","POST"])
@@ -46,19 +39,17 @@ def Login():
             if "username" in request.form and "password" in request.form:
                 username = request.form["username"]
                 password = request.form["password"]
-                if username=="admin" and password=="admin":
-                    session["username"] = username
+                if UserLogin(username,password):
                     return redirect(url_for("Index"))
                 else:
                     return redirect(url_for("Login"))             
         abort(400)
-    username, login_auth = get_current_user()
+    username, login_auth = GetCurrentUser()
     return render_template("login.html", username=username, login_auth=login_auth)
 
 @app.route("/logout")
 def Logout():
-    if "username" in session:
-        del session["username"]
+    UserLogout()
     return redirect(url_for("Index"))
 
 
