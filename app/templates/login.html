@@ -1,16 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    <form action="" method="post">
-        <p>İsminizi giriniz :</p>
-        <p><input type="text" name="name"</p>
-        <p><input type="submit" value="Gönder"</p>
-    </form>
-</body>
-</html>
+{% extends 'base.html' %} 	<!-- Base Class'ı extend ediyorum -->
+
+{% block body_content %}
+
+<section id="one" class="wrapper">
+    <div class="inner">
+        <h3>Giriş</h3>
+        <form method="post" action="{{ url_for('Login') }}">
+            <div class="row uniform">
+              <div class="6u 12u$(xsmall)">
+                <input
+                  type="text"
+                  name="username"
+                  id="username"
+                  value=""
+                  placeholder="Kullanıcı Adı"
+                />
+              </div>
+              <div class="6u$ 12u$(xsmall)">
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  value=""
+                  placeholder="Şifre"
+                />
+              </div>
+              <!-- Break -->                                                                                  
+              <div class="12u$">
+                <ul class="actions">
+                  <li><input type="submit" value="GİRİŞ YAP" /></li>                  
+                </ul>
+              </div>
+            </div>
+          </form>
+
+
+
+
+
+
+    </div>
+</section>
+
+{% endblock %}	

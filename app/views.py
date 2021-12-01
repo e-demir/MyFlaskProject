@@ -1,4 +1,4 @@
-from flask import  Flask, render_template, url_for, redirect, request, make_response,session
+from flask import  Flask, render_template, url_for, redirect, request, make_response,session,abort
 from itsdangerous import Signer,BadSignature
 
 
@@ -6,11 +6,54 @@ app = Flask(__name__)
 app.secret_key = b"secretkey1903"
 # app.session_interface = MySessionInterface()
 
+def get_current_user():
+    username = ""
+    login_auth = False
+    if "username" in session:
+        username = session["username"]
+        login_auth = True
+    
+    return username,login_auth
+
 @app.route("/")
 def Index():
-    return render_template("index.html")
+    username, login_auth = get_current_user()
+    return render_template("index.html",username=username, login_auth=login_auth)
 
+@app.route("/contact", methods=["GET","POST"])
+def Contact():
+    username, login_auth = get_current_user()
+    if request.method == "POST":
+        pass
 
+    return render_template("contact.html",username=username, login_auth=login_auth)
+
+@app.route("/contactlist")
+def ContactList():
+    username, login_auth = get_current_user()
+    return render_template("contact_list.html",username=username, login_auth=login_auth)
+
+@app.route("/login", methods=["GET","POST"])
+def Login():
+    if request.method == "POST":
+        if request.form:
+            if "username" in request.form and "password" in request.form:
+                username = request.form["username"]
+                password = request.form["password"]
+                if username=="admin" and password=="admin":
+                    session["username"] = username
+                    return redirect(url_for("Index"))
+                else:
+                    return redirect(url_for("Login"))             
+        abort(400)
+    username, login_auth = get_current_user()
+    return render_template("login.html", username=username, login_auth=login_auth)
+
+@app.route("/logout")
+def Logout():
+    if "username" in session:
+        del session["username"]
+    return redirect(url_for("Index"))
 
 
 # @app.route("/")
