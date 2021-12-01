@@ -2,16 +2,14 @@ from flask import  Flask, render_template, url_for, redirect, request, make_resp
 from itsdangerous import Signer,BadSignature
 from app.controllers import UserLogin, UserLogout,GetCurrentUser,GetContactList, SaveContactRequest
 
-app = Flask(__name__, template_folder="../templates")
-app.secret_key = b"secretkey1903"
-# app.session_interface = MySessionInterface()
 
-@app.route("/")
+
+
 def Index():
     username, login_auth = GetCurrentUser()
     return render_template("index.html",username=username, login_auth=login_auth)
 
-@app.route("/contact", methods=["GET","POST"])
+
 def Contact():
     username, login_auth = GetCurrentUser()
     if request.method == "POST":
@@ -26,13 +24,13 @@ def Contact():
     username,login_auth = GetCurrentUser()
     return render_template("contact.html",username=username, login_auth=login_auth)
 
-@app.route("/contactlist")
+
 def ContactList():
     username, login_auth = GetCurrentUser()
     contactList = GetContactList()
     return render_template("contact_list.html",username=username, login_auth=login_auth, contactList=contactList)
 
-@app.route("/login", methods=["GET","POST"])
+
 def Login():
     if request.method == "POST":
         if request.form:
@@ -47,7 +45,6 @@ def Login():
     username, login_auth = GetCurrentUser()
     return render_template("login.html", username=username, login_auth=login_auth)
 
-@app.route("/logout")
 def Logout():
     UserLogout()
     return redirect(url_for("Index"))
