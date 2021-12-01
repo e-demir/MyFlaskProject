@@ -31,7 +31,13 @@ def Contact():
 @app.route("/contactlist")
 def ContactList():
     username, login_auth = get_current_user()
-    return render_template("contact_list.html",username=username, login_auth=login_auth)
+    contactList = [
+        ["Emrullah DEMİR","Üretim","Yüksek"],
+        ["Ayça TUNCAY","Satış","Orta"],
+        ["Zehra Sultan DEMİR","İnsan Kaynakları","Yüksek"],
+        ["Ali Veli","Nakliye","Orta"]
+    ]
+    return render_template("contact_list.html",username=username, login_auth=login_auth, contactList=contactList)
 
 @app.route("/login", methods=["GET","POST"])
 def Login():
